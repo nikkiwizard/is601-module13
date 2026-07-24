@@ -222,7 +222,7 @@ def browser_context():
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(
             headless=True,
-            args=['--no-sandbox', '--disable-dev-shm-usage']
+            args=['--no-sandbox', '--disable-dev-shm-usage', '--no-proxy-server']
         )
         logger.info("Playwright browser launched.")
         try:
