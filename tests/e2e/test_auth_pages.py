@@ -18,44 +18,6 @@ def create_test_user() -> dict:
         "confirm_password": "SecurePass123!",
     }
 
-
-def register_user_through_api(base_url: str, user: dict) -> None:
-    """Register a test user directly through the API."""
-    response = requests.post(
-        f"{base_url}/auth/register",
-        json=user,
-        timeout=10,
-    )
-
-    assert response.status_code == 201, response.text
-
-
-def open_registration_page(page: Page, base_url: str) -> None:
-    """Open the registration page and wait for its form."""
-    page.goto(
-        f"{base_url}/register",
-        wait_until="commit",
-    )
-
-    page.locator("#registrationForm").wait_for(
-        state="visible",
-        timeout=10_000,
-    )
-
-
-def open_login_page(page: Page, base_url: str) -> None:
-    """Open the login page and wait for its form."""
-    page.goto(
-        f"{base_url}/login",
-        wait_until="commit",
-    )
-
-    page.locator("#loginForm").wait_for(
-        state="visible",
-        timeout=10_000,
-    )
-
-
 @pytest.mark.e2e
 def test_successful_registration(
     page: Page,
@@ -65,7 +27,7 @@ def test_successful_registration(
     base_url = fastapi_server.rstrip("/")
     user = create_test_user()
 
-    open_registration_page(page, base_url)
+    page.goto(f"{base_url}/register")
 
     page.fill("#username", user["username"])
     page.fill("#email", user["email"])
@@ -91,7 +53,7 @@ def test_registration_rejects_short_password(
     base_url = fastapi_server.rstrip("/")
     user = create_test_user()
 
-    open_registration_page(page, base_url)
+    page.goto(f"{base_url}/register")
 
     page.fill("#username", user["username"])
     page.fill("#email", user["email"])
@@ -118,7 +80,7 @@ def test_successful_login_stores_token(
     user = create_test_user()
 
     register_user_through_api(base_url, user)
-    open_login_page(page, base_url)
+    page.goto(f"{base_url}/login")
 
     page.fill("#username", user["username"])
     page.fill("#password", user["password"])
@@ -154,7 +116,7 @@ def test_login_rejects_wrong_password(
     user = create_test_user()
 
     register_user_through_api(base_url, user)
-    open_login_page(page, base_url)
+    page.goto(f"{base_url}/login")
 
     page.fill("#username", user["username"])
     page.fill("#password", "WrongPassword123!")
