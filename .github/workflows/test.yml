@@ -46,6 +46,7 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           playwright install  # if you use Playwright for e2e tests
+          python -m playwright install chromium
       
       - name: Run tests
         env:
@@ -54,7 +55,7 @@ jobs:
           source venv/bin/activate
           
           # 1) Unit tests
-          pytest tests/unit/ --cov=src --junitxml=test-results/junit.xml
+          pytest tests/unit/ --cov=app --junitxml=test-results/junit.xml
           
           # 2) Integration tests
           pytest tests/integration/
