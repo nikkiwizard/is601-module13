@@ -18,6 +18,16 @@ def create_test_user() -> dict:
         "confirm_password": "SecurePass123!",
     }
 
+def register_user_through_api(base_url: str, user: dict) -> None:
+    """Register a test user directly through the API."""
+    response = requests.post(
+        f"{base_url}/auth/register",
+        json=user,
+        timeout=10,
+    )
+
+    assert response.status_code == 201, response.text
+
 @pytest.mark.e2e
 def test_successful_registration(
     page: Page,
