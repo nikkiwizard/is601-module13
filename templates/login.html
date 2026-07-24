@@ -134,7 +134,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.detail || 'Login failed');
+              if (response.status === 401) {
+                  throw new Error('Invalid username or password');
+              }
+
+              throw new Error(data.detail || 'Login failed');
             }
 
             // Store tokens and user data
